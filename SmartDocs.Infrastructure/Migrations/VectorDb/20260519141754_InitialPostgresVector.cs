@@ -7,7 +7,7 @@ using Pgvector;
 namespace SmartDocs.Infrastructure.Migrations.VectorDb
 {
     /// <inheritdoc />
-    public partial class AddVectorSupport : Migration
+    public partial class InitialPostgresVector : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -13,8 +13,8 @@ using SmartDocs.Infrastructure.Data;
 namespace SmartDocs.Infrastructure.Migrations.VectorDb
 {
     [DbContext(typeof(VectorDbContext))]
-    [Migration("20260515062936_AddVectorSupport")]
-    partial class AddVectorSupport
+    [Migration("20260519141754_InitialPostgresVector")]
+    partial class InitialPostgresVector
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
