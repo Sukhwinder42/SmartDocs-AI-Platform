@@ -1,0 +1,110 @@
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using SmartDocs.Application.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace SmartDocs.Infrastructure.Services
+{
+    public class GeminiService : IGeminiService
+    {
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+
+        public GeminiService(HttpClient httpClient, IConfiguration configuration)
+        {
+            _httpClient = httpClient;
+            _configuration = configuration;
+        }
+
+        public async Task<string> GenerateSummaryAsync(string text)
+        {
+            return await CallGeminiAsync(
+                $"Summarize this document:\n\n{text}"
+            );
+        }
+
+        public async Task<string> AskQuestionAsync(string documentText, string question)
+        {
+            return await CallGeminiAsync(
+                $"Document:\n{documentText}\n\nQuestion: {question}"
+            );
+        }
+
+        // 🔥 CENTRAL SAFE METHOD
+        private async Task<string> CallGeminiAsync(string prompt)
+        {
+            try
+            {
+                var apiKey = _configuration["Gemini:ApiKey"];
+
+                var endpoint =
+                    $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
+
+                var requestBody = new
+                {
+                    contents = new[]
+                    {
+                        new
+                        {
+                            parts = new[]
+                            {
+                                new { text = prompt }
+                            }
+                        }
+                    }
+                };
+
+                var json = JsonConvert.SerializeObject(requestBody);
+
+                var content = new StringContent(
+                    json,
+                    Encoding.UTF8,
+                    "application/json"
+                );
+
+                var response = await _httpClient.PostAsync(endpoint, content);
+
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                // ❗ CHECK HTTP SUCCESS FIRST
+                if (!response.IsSuccessStatusCode)
+                {
+                    return $"Gemini API Error: {response.StatusCode} - {responseString}";
+                }
+
+                dynamic result = JsonConvert.DeserializeObject(responseString);
+
+                // ❗ SAFE NULL CHECKS
+                var text =
+                    result?.candidates?[0]?.content?.parts?[0]?.text;
+
+                if (text == null)
+                {
+                    return "Gemini returned empty response.";
+                }
+
+                return text.ToString();
+            }
+            catch (Exception ex)
+            {
+                return $"Gemini Service Exception: {ex.Message}";
+            }
+        }
+
+        public async Task<float[]> GenerateEmbeddingAsync(string text)
+        {
+            // TEMP MOCK EMBEDDINGS
+
+            Random random = new Random();
+
+            return Enumerable.Range(0, 768)
+                .Select(x => (float)random.NextDouble())
+                .ToArray();
+        }
+    }
+}
