@@ -34,26 +34,6 @@ namespace SmartDocs.API.Controllers
                 return BadRequest("No file uploaded.");
             }
 
-            // Get logged-in user ID
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            //// DEBUG START
-            //Console.WriteLine("===== CLAIMS =====");
-
-            //foreach (var claim in User.Claims)
-            //{
-            //    Console.WriteLine($"CLAIM TYPE: {claim.Type}");
-            //    Console.WriteLine($"CLAIM VALUE: {claim.Value}");
-            //}
-
-            //Console.WriteLine($"Identity Name: {User.Identity?.Name}");
-            //Console.WriteLine($"userIdClaim: {userIdClaim}");
-
-            //Console.WriteLine("===== END CLAIMS =====");
-            //// DEBUG END
-            ///
-
             var userIdClaim = User.Claims
             .FirstOrDefault(c =>
             c.Type == ClaimTypes.NameIdentifier &&
@@ -69,9 +49,11 @@ namespace SmartDocs.API.Controllers
             var uniqueFileName = $"{Guid.NewGuid()}_{model.File.FileName}";
 
             // Upload path
+            // Render-safe upload folder
             var uploadsFolder = Path.Combine(
-                _environment.WebRootPath,
-                "uploads");
+                Path.GetTempPath(),
+                "uploads"
+            );
 
             // Create folder if not exists
             if (!Directory.Exists(uploadsFolder))
@@ -80,14 +62,19 @@ namespace SmartDocs.API.Controllers
             }
 
             // Final file path
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            var filePath = Path.Combine(
+                uploadsFolder,
+                uniqueFileName
+            );
 
             // Save file
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(
+                filePath,
+                FileMode.Create,
+                FileAccess.Write))
             {
                 await model.File.CopyToAsync(stream);
             }
-
             // Save metadata to database
             var document = new Document
             {
@@ -118,8 +105,7 @@ namespace SmartDocs.API.Controllers
         [HttpGet]
         public IActionResult GetMyDocuments()
         {
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+         
 
             var userIdClaim = User.Claims
             .FirstOrDefault(c =>
