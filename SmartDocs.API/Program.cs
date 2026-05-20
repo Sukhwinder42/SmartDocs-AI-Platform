@@ -68,25 +68,12 @@ builder.Services.AddHangfire(config =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHangfireServer();
-//builder.Services.AddStackExchangeRedisCache(options =>
-//{
-//    options.Configuration = "localhost:6379";
-//});
-
-//register database context and identity services
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(
-//        builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 
-//builder.Services.AddDbContext<VectorDbContext>(options =>
-//    options.UseNpgsql(
-//        builder.Configuration["PostgresConnection:DefaultConnection"],
-//        o => o.UseVector()));
 builder.Services.AddDbContext<VectorDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -145,8 +132,6 @@ app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-//app.UseHangfireDashboard();
 
 app.MapControllers();
 
