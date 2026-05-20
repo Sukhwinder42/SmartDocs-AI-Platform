@@ -40,7 +40,7 @@ namespace SmartDocs.Infrastructure.Services
         {
             try
             {
-                var apiKey = _configuration["Gemini:ApiKey"];
+                var apiKey = _configuration["SmartDocsAPI_GEMINI_API_KEY"];
 
                 var endpoint =
                     $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
