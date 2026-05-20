@@ -11,8 +11,10 @@ namespace SmartDocs.Web.Services
         {
             _httpClient = httpClient;
 
+            //_httpClient.BaseAddress =
+            //    new Uri("https://localhost:7031/");
             _httpClient.BaseAddress =
-                new Uri("https://localhost:7031/");
+    new Uri("https://smartdocs-ai-platform.onrender.com/");
         }
 
 
