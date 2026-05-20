@@ -75,9 +75,9 @@ namespace SmartDocs.Web.Controllers
                 file.FileName);
 
             var response =
-                await client.PostAsync(
-                    "https://localhost:7031/api/document/upload",
-                    form);
+      await client.PostAsync(
+          "https://smartdocs-ai-platform.onrender.com/api/document/upload",
+          form);
 
             return RedirectToAction("List");
         }
