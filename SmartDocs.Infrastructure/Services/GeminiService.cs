@@ -74,7 +74,10 @@ namespace SmartDocs.Infrastructure.Services
                 // ❗ CHECK HTTP SUCCESS FIRST
                 if (!response.IsSuccessStatusCode)
                 {
-                    return $"Gemini API Error: {response.StatusCode} - {responseString}";
+                    if ((int)response.StatusCode == 503)
+                        throw new Exception("AI service is currently busy. Please try again later.");
+
+                    throw new Exception("AI service temporarily unavailable.");
                 }
 
                 dynamic result = JsonConvert.DeserializeObject(responseString);
