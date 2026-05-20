@@ -13,6 +13,8 @@ using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // Add services to the container.
 
@@ -123,16 +125,11 @@ builder.Services.AddAuthentication(options =>
 var app = builder.Build();
 app.UseHangfireDashboard();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 //for static files like uploaded documents, we need to enable static file serving
 app.UseStaticFiles();
 
