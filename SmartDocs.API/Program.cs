@@ -11,6 +11,8 @@ using SmartDocs.Infrastructure.Data;
 using SmartDocs.Infrastructure.Services;
 using System.Security.Claims;
 using System.Text;
+using Pgvector;
+using Pgvector.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";

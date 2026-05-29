@@ -1,37 +1,5 @@
 ﻿@model List<SmartDocs.Web.ViewModels.DocumentViewModel>
 
-@* <div class="row">
-
-    @foreach (var doc in Model)
-    {
-        <div class="col-md-4">
-
-            <div class="card">
-
-                <div class="card-body">
-
-                    <h5>@doc.FileName</h5>
-
-                    <p>
-                        AI-ready document
-                    </p>
-
-                    <a href="/Ai/Chat/@doc.Id"
-                       class="btn btn-primary">
-
-                        Open AI Chat
-
-                    </a>
-
-                </div>
-
-            </div>
-
-        </div>
-    }
-
-</div> *@
-
 <div class="row">
 
     @foreach (var doc in Model)

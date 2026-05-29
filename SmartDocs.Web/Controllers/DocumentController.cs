@@ -74,10 +74,34 @@ namespace SmartDocs.Web.Controllers
                 "file",
                 file.FileName);
 
-            var response =
-      await client.PostAsync(
-          "https://smartdocs-ai-platform.onrender.com/api/document/upload",
-          form);
+            //      var response =
+            //await client.PostAsync(
+            //    "https://smartdocs-ai-platform.onrender.com/api/document/upload",
+            //    form);
+
+            //      return RedirectToAction("List");
+
+            var response = await client.PostAsync(
+             "https://smartdocs-ai-platform.onrender.com/api/document/upload",
+             form);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "Upload failed.";
+                return RedirectToAction("Upload");
+            }
+
+            // READ RESPONSE
+            var json =
+                await response.Content.ReadAsStringAsync();
+
+            var uploadedDoc =
+                Newtonsoft.Json.JsonConvert.DeserializeObject<DocumentViewModel>(json);
+
+            // CALL SUMMARIZE API
+            await client.PostAsync(
+                $"https://smartdocs-ai-platform.onrender.com/api/ai/summarize/{uploadedDoc.Id}",
+                null);
 
             return RedirectToAction("List");
         }
