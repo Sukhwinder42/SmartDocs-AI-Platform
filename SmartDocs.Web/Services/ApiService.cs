@@ -54,11 +54,6 @@ namespace SmartDocs.Web.Services
                 throw new Exception(result);
             }
 
-            // If T is string, return raw result
-            //if (typeof(T) == typeof(string))
-            //{
-            //    return (T)(object)result;
-            //}
             if (typeof(T) == typeof(string))
             {
                 return (T)(object)result.Replace("\0", "");
@@ -85,12 +80,6 @@ namespace SmartDocs.Web.Services
             var response =
                 await _httpClient.GetAsync(endpoint);
 
-            //var result =
-            //    await response.Content
-            //        .ReadAsStringAsync();
-
-            //return JsonConvert
-            //    .DeserializeObject<T>(result);
 
             var result =
     await response.Content.ReadAsStringAsync();

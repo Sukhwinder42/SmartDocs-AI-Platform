@@ -41,9 +41,9 @@ namespace SmartDocs.API.Controllers
             _textCleanerService = textCleanerService;
         }
 
-        // =========================
+        
         // SUMMARIZE DOCUMENT
-        // =========================
+        
         [HttpPost("summarize/{documentId}")]
         public async Task<IActionResult> SummarizeDocument(Guid documentId)
         {
@@ -52,10 +52,20 @@ namespace SmartDocs.API.Controllers
             if (document == null)
                 return NotFound("Document not found.");
 
+            var exists =
+            _vectorContext.DocumentEmbeddings
+            .Any(x => x.DocumentId == document.Id);
+
+            if (exists)
+            {
+                return Ok("Already processed");
+            }
+
             // 1. OCR
             var extractedText = await _ocrService.ExtractTextAsync(document.FilePath);
 
-            extractedText = Clean(extractedText);
+            //extractedText = Clean(extractedText);
+            extractedText = _textCleanerService.CleanText(extractedText);
 
             document.ExtractedText = extractedText;
 
@@ -107,9 +117,9 @@ namespace SmartDocs.API.Controllers
             });
         }
 
-        // =========================
+        
         // ASK QUESTION (RAG)
-        // =========================
+       
         [HttpPost("ask")]
         public async Task<IActionResult> AskQuestion(AskQuestionDto model)
         {
@@ -143,9 +153,9 @@ namespace SmartDocs.API.Controllers
             });
         }
 
-        // =========================
+        
         // SAFE TEXT CLEANER
-        // =========================
+        
         private string Clean(string input)
         {
             if (string.IsNullOrEmpty(input))

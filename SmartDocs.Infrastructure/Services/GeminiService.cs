@@ -30,8 +30,26 @@ namespace SmartDocs.Infrastructure.Services
 
         public async Task<string> AskQuestionAsync(string documentText, string question)
         {
+            //return await CallGeminiAsync(
+            //    $"Document:\n{documentText}\n\nQuestion: {question}"
+            //);
+
             return await CallGeminiAsync(
-                $"Document:\n{documentText}\n\nQuestion: {question}"
+            $"""
+            You are a document assistant.
+
+            Answer ONLY using the provided context.
+
+            If answer is not found,
+            say:
+            'Information not found in document.'
+
+            Context:
+            {documentText}
+
+            Question:
+            {question}
+            """
             );
         }
 
@@ -99,14 +117,61 @@ namespace SmartDocs.Infrastructure.Services
             }
         }
 
+        //public async Task<float[]> GenerateEmbeddingAsync(string text)
+        //{
+        //    // TEMP MOCK EMBEDDINGS
+
+        //    Random random = new Random();
+
+        //    return Enumerable.Range(0, 768)
+        //        .Select(x => (float)random.NextDouble())
+        //        .ToArray();
+        //}
+
         public async Task<float[]> GenerateEmbeddingAsync(string text)
         {
-            // TEMP MOCK EMBEDDINGS
+            var apiKey =
+                _configuration["SmartDocsAPI_GEMINI_API_KEY"];
 
-            Random random = new Random();
+            var endpoint =
+                $"https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key={apiKey}";
 
-            return Enumerable.Range(0, 768)
-                .Select(x => (float)random.NextDouble())
+            var body = new
+            {
+                content = new
+                {
+                    parts = new[]
+                    {
+                new
+                {
+                    text = text
+                }
+            }
+                }
+            };
+
+            var json =
+                JsonConvert.SerializeObject(body);
+
+            var response =
+                await _httpClient.PostAsync(
+                    endpoint,
+                    new StringContent(
+                        json,
+                        Encoding.UTF8,
+                        "application/json"));
+
+            response.EnsureSuccessStatusCode();
+
+            var result =
+                JsonConvert.DeserializeObject<dynamic>(
+                    await response.Content.ReadAsStringAsync());
+
+            var values =
+                result.embedding.values;
+
+            return ((IEnumerable<dynamic>)values)
+                .Select(x => (float)x)
                 .ToArray();
         }
     }

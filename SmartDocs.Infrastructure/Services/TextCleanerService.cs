@@ -7,57 +7,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
-//namespace SmartDocs.Infrastructure.Services
-//{
-//    public class TextCleanerService
-//        : ITextCleanerService
-//    {
-//        public string CleanText(string text)
-//        {
-//            if (string.IsNullOrWhiteSpace(text))
-//                return string.Empty;
-
-//            // Normalize line endings
-//            text = text.Replace("\r\n", "\n");
-
-//            // Remove tabs
-//            text = text.Replace("\t", " ");
-
-//            // Remove weird OCR unicode chars
-//            text = Regex.Replace(
-//                text,
-//                @"[^\u0000-\u007F]+",
-//                " ");
-
-//            // Preserve paragraph breaks
-//            text = Regex.Replace(
-//                text,
-//                @"\n{3,}",
-//                "\n\n");
-
-//            // Remove extra spaces WITHOUT removing new lines
-//            text = Regex.Replace(
-//                text,
-//                @"[ ]{2,}",
-//                " ");
-
-//            // Add spacing between merged sentences
-//            text = Regex.Replace(
-//                text,
-//                @"([a-z])([A-Z])",
-//                "$1 $2");
-
-//            // Clean spaces around newlines
-//            text = Regex.Replace(
-//                text,
-//                @"\s*\n\s*",
-//                "\n");
-
-//            return text.Trim();
-//        }
-//    }
-//}
-
 namespace SmartDocs.Infrastructure.Services
 {
     public class TextCleanerService

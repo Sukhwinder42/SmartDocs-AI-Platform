@@ -49,7 +49,7 @@ namespace SmartDocs.Web.Controllers
             var token =
                 HttpContext.Session.GetString("JWToken");
 
-            // 🔥 BLOCK UNLOGGED USERS
+            // BLOCK UNLOGGED USERS
             if (string.IsNullOrEmpty(token))
             {
                 return RedirectToAction("Login", "Auth");
@@ -74,12 +74,6 @@ namespace SmartDocs.Web.Controllers
                 "file",
                 file.FileName);
 
-            //      var response =
-            //await client.PostAsync(
-            //    "https://smartdocs-ai-platform.onrender.com/api/document/upload",
-            //    form);
-
-            //      return RedirectToAction("List");
 
             var response = await client.PostAsync(
              "https://smartdocs-ai-platform.onrender.com/api/document/upload",

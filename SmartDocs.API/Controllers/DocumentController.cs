@@ -118,8 +118,7 @@ namespace SmartDocs.API.Controllers
                 return Unauthorized("Invalid user ID.");
             }
 
-            //var documents = _context.Documents
-            //    .Where(d => d.UserId == Guid.Parse(userId))
+           
             var documents = _context.Documents
             .Where(d => d.UserId == userId)
                 .Select(d => new DocumentResponseDto
