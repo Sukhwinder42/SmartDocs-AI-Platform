@@ -24,7 +24,8 @@ namespace SmartDocs.Infrastructure.Data
 
             modelBuilder.Entity<DocumentEmbedding>()
                 .Property(x => x.Embedding)
-                .HasColumnType("vector(768)");
+                //.HasColumnType("vector(768)");
+                .HasColumnType("vector(3072)");
 
             base.OnModelCreating(modelBuilder);
         }
