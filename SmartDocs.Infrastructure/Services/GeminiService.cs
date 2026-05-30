@@ -133,8 +133,14 @@ namespace SmartDocs.Infrastructure.Services
             var apiKey =
                 _configuration["SmartDocsAPI_GEMINI_API_KEY"];
 
+            //var endpoint =
+            //    $"https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key={apiKey}";
+
+            //var endpoint =
+            //      $"https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={apiKey}";
+
             var endpoint =
-                $"https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key={apiKey}";
+                    $"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key={apiKey}";
 
             var body = new
             {
@@ -161,7 +167,22 @@ namespace SmartDocs.Infrastructure.Services
                         Encoding.UTF8,
                         "application/json"));
 
-            response.EnsureSuccessStatusCode();
+
+            //just for checking error details from Gemini
+            //response.EnsureSuccessStatusCode();
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    $"Gemini Embedding Error ({response.StatusCode}): {responseBody}");
+            }
+
+
+
+
+
 
             var result =
                 JsonConvert.DeserializeObject<dynamic>(
